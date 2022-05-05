@@ -3,16 +3,37 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"lab3/pkg/db"
 	"log"
 	"os"
 )
 
+var err = godotenv.Load(".env")
+
+var (
+	port     = os.Getenv("PORT")
+	dialect  = os.Getenv("DIALECT")
+	host     = os.Getenv("HOST")
+	dbPort   = os.Getenv("DBPORT")
+	dbName   = os.Getenv("DBNAME")
+	user     = os.Getenv("DBUSER")
+	password = os.Getenv("PASSWORD")
+)
+
 func main() {
-	err := godotenv.Load(".env")
 	logError(err)
+	dbConnection := db.Connection{
+		Dialect:  dialect,
+		Host:     host,
+		DBPort:   dbPort,
+		DBName:   dbName,
+		User:     user,
+		Password: password,
+	}
 
 	server := gin.Default()
-	port := os.Getenv("PORT")
+	dbConnection.Open()
+	defer dbConnection.Close()
 
 	err = server.Run(":" + port)
 	logError(err)
