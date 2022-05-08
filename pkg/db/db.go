@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"lab3/pkg/entity"
+	"lab3/pkg/db/entity"
 	"log"
 	"reflect"
 )
@@ -52,15 +52,26 @@ func (c *Connection) AutoFill() error {
 		return errors.New("db connection is not established")
 	}
 
+	c.DB.Where("1 = 1").Unscoped().Delete(&entity.Machine{})
+	c.DB.Where("1 = 1").Unscoped().Delete(&entity.Balancer{})
+
 	c.DB.AutoMigrate(&entity.Balancer{})
+	c.DB.AutoMigrate(&entity.Machine{})
+
+	machine1 := entity.Machine{State: 0}
+	machine2 := entity.Machine{State: 1}
+	machine3 := entity.Machine{State: 1}
+	machine4 := entity.Machine{State: 0}
+	c.DB.Create(&machine1)
+	c.DB.Create(&machine2)
+	c.DB.Create(&machine3)
+	c.DB.Create(&machine4)
 
 	balancer1 := entity.Balancer{
-		ConnectedMachines: []int32{1, 2},
-		UsedMachines:      []int32{2},
+		ConnectedMachines: []entity.Machine{machine1, machine2},
 	}
 	balancer2 := entity.Balancer{
-		ConnectedMachines: []int32{2, 3, 4},
-		UsedMachines:      []int32{2, 3},
+		ConnectedMachines: []entity.Machine{machine3, machine4},
 	}
 	c.DB.Create(&balancer1)
 	c.DB.Create(&balancer2)
