@@ -7,6 +7,6 @@ type Balancer struct {
 	ConnectedMachines []Machine `gorm:"foreignkey:BalancerId"`
 }
 
-func (b *Balancer) ToString() {
+func (b *Balancer) Print() {
 	fmt.Printf("Balancer ID: %d \n", b.Id)
 }

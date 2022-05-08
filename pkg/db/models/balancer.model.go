@@ -5,11 +5,20 @@ import (
 	"lab3/pkg/db/entity"
 )
 
-type BalancerModel struct {
+type BalancerModel interface {
+	FindAll() []entity.Balancer
 }
 
-func (bm *BalancerModel) FindAll(db *gorm.DB) []entity.Balancer {
-	var balancers []entity.Balancer
-	db.Preload("ConnectedMachines").Find(&balancers)
-	return balancers
+type balancerModel struct {
+	db *gorm.DB
+}
+
+func NewBalancerModel(database *gorm.DB) BalancerModel {
+	return &balancerModel{db: database}
+}
+
+func (bm *balancerModel) FindAll() []entity.Balancer {
+	var res []entity.Balancer
+	bm.db.Preload("ConnectedMachines").Find(&res)
+	return res
 }
