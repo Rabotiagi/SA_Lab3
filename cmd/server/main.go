@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"lab3/pkg/db"
+	"lab3/pkg/entity"
 	"log"
 	"os"
 )
@@ -31,10 +33,17 @@ func main() {
 		Password: password,
 	}
 
-	server := gin.Default()
-	dbConnection.Open()
+	err = dbConnection.Open()
 	defer dbConnection.Close()
+	logError(err)
+	err = dbConnection.AutoFill()
+	logError(err)
 
+	var res []entity.Balancer
+	dbConnection.DB.Find(&res)
+	fmt.Println(res)
+
+	server := gin.Default()
 	err = server.Run(":" + port)
 	logError(err)
 }
