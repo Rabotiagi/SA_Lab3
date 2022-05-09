@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"lab3/pkg/db/entity"
 	"lab3/pkg/middleware"
 	"lab3/pkg/service"
 	"lab3/pkg/tools"
@@ -11,7 +10,7 @@ import (
 )
 
 type MachineController interface {
-	changeState(int, entity.MachineData) map[string]string
+	changeState(int, int) map[string]string
 	Config(*gin.Engine)
 }
 type machineController struct {
@@ -28,23 +27,16 @@ func (mc *machineController) Config(server *gin.Engine) {
 	server.PUT("/machines/:id", middleware.ValidateId(mc.machineService), func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
 		tools.LogError(err)
-		var reqBody entity.MachineData
-		err = ctx.BindJSON(&reqBody)
-		if err != nil {
-			tools.LogError(err)
-			ctx.JSON(http.StatusBadRequest, map[string]string{
-				"msg":    "invalid input data",
-				"status": "rejected",
-			})
-			return
-		}
+		state, valid := tools.ValidateReqBody(ctx)
 
-		ctx.JSON(http.StatusCreated, mc.changeState(id, reqBody))
+		if valid {
+			ctx.JSON(http.StatusCreated, mc.changeState(id, state))
+		}
 	})
 }
 
-func (mc *machineController) changeState(id int, machine entity.MachineData) map[string]string {
-	mc.machineService.ChangeState(id, machine.State)
+func (mc *machineController) changeState(id int, state int) map[string]string {
+	mc.machineService.ChangeState(id, state)
 	return map[string]string{
 		"status": "success",
 		"msg":    "machine status was changed",
