@@ -3,7 +3,10 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	controller "lab3/pkg/controllers"
 	"lab3/pkg/db"
+	"lab3/pkg/db/model"
+	"lab3/pkg/service"
 	"lab3/pkg/tools"
 	"os"
 )
@@ -35,6 +38,17 @@ func main() {
 	defer dbConnection.Close()
 	tools.LogError(dbConnection.AutoFill())
 
+	bm := model.NewBalancerModel(dbConnection.DB)
+	mm := model.NewMachineModel(dbConnection.DB)
+
+	bs := service.NewBalancerS(bm)
+	ms := service.NewMachineS(mm)
+
+	bc := controller.NewBalancerC(bs)
+	mc := controller.NewMachineC(ms)
+
 	server := gin.Default()
+	bc.Config(server)
+	mc.Config(server)
 	tools.LogError(server.Run(":" + port))
 }

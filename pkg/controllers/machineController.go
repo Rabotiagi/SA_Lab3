@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"lab3/pkg/db/entity"
+	"lab3/pkg/middleware"
 	"lab3/pkg/service"
 	"lab3/pkg/tools"
 	"net/http"
@@ -24,10 +25,9 @@ func NewMachineC(service service.MachineService) MachineController {
 }
 
 func (mc *machineController) Config(server *gin.Engine) {
-	server.PUT("/machines/:id", func(ctx *gin.Context) {
+	server.PUT("/machines/:id", middleware.ValidateId(mc.machineService), func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
 		tools.LogError(err)
-
 		var reqBody entity.MachineData
 		err = ctx.BindJSON(&reqBody)
 		if err != nil {
