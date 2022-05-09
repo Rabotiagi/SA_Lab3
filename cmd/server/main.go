@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"lab3/pkg/db"
-	"log"
+	"lab3/pkg/tools"
 	"os"
 )
 
@@ -21,7 +21,7 @@ var (
 )
 
 func main() {
-	logError(err)
+	tools.LogError(err)
 	dbConnection := db.Connection{
 		Dialect:  dialect,
 		Host:     host,
@@ -31,19 +31,10 @@ func main() {
 		Password: password,
 	}
 
-	err = dbConnection.Open()
+	tools.LogError(dbConnection.Open())
 	defer dbConnection.Close()
-	logError(err)
-	err = dbConnection.AutoFill()
-	logError(err)
+	tools.LogError(dbConnection.AutoFill())
 
 	server := gin.Default()
-	err = server.Run(":" + port)
-	logError(err)
-}
-
-func logError(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
+	tools.LogError(server.Run(":" + port))
 }

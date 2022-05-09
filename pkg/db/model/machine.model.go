@@ -6,7 +6,7 @@ import (
 )
 
 type MachineModel interface {
-	ChangeState(int, int)
+	ChangeState(int, int) error
 	findAll() []entity.Machine
 }
 
@@ -24,7 +24,7 @@ func (mm *machineModel) findAll() []entity.Machine {
 	return res
 }
 
-func (mm *machineModel) ChangeState(id int, state int) {
-	mm.db.Model(&entity.Machine{Id: id}).Update("state", state)
-	//return res.Error
+func (mm *machineModel) ChangeState(id int, state int) error {
+	res := mm.db.Model(&entity.Machine{Id: id}).Update("state", state)
+	return res.Error
 }

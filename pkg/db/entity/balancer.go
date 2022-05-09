@@ -7,6 +7,12 @@ type Balancer struct {
 	ConnectedMachines []Machine `gorm:"foreignkey:BalancerId"`
 }
 
+type BalancerData struct {
+	Id                 int
+	UsedMachines       []int
+	TotalMachinesCount int
+}
+
 func (b *Balancer) Print() {
 	fmt.Printf("Balancer ID: %d \n", b.Id)
 }

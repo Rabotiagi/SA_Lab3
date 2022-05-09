@@ -6,7 +6,7 @@ import (
 )
 
 type BalancerModel interface {
-	FindAll() []entity.Balancer
+	FindAll() ([]entity.Balancer, error)
 }
 
 type balancerModel struct {
@@ -17,8 +17,8 @@ func NewBalancerModel(database *gorm.DB) BalancerModel {
 	return &balancerModel{db: database}
 }
 
-func (bm *balancerModel) FindAll() []entity.Balancer {
+func (bm *balancerModel) FindAll() ([]entity.Balancer, error) {
 	var res []entity.Balancer
-	bm.db.Preload("ConnectedMachines").Find(&res)
-	return res
+	db := bm.db.Preload("ConnectedMachines").Find(&res)
+	return res, db.Error
 }
