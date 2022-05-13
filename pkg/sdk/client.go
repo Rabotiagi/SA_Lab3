@@ -18,7 +18,7 @@ type MachineData struct {
 }
 
 type Balancer struct {
-	Id 			  	   int   `json:"id"`
+	Id 				   int   `json:"id"`
 	UsedMachines  	   []int `json:"usedmachines"`
 	TotalMachinesCount int   `json:"totalmachinescount"`
 }
@@ -46,7 +46,7 @@ func (c *Client) ListBalancers(ctx context.Context) ([]Balancer, error) {
 	return result, nil
 }
 
-func (c *Client) ChangeMachineStatus(ctx context.Context, id int, state bool) error {
+func (c *Client) ChangeMachineState(ctx context.Context, id int, state bool) error {
 	var data MachineData
 	if state {
 		data.State = 1

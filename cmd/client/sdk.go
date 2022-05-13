@@ -27,7 +27,7 @@ func main() {
 	fmt.Println(balancers)
 
 	fmt.Println("=== Scenario 2 ===")
-	err = client.ChangeMachineStatus(ctx, 46, true)
+	err = client.ChangeMachineState(ctx, 54, true)
 	if err != nil {
 		log.Fatal("Cannot change state: ", err)
 	}

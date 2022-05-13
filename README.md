@@ -1,6 +1,6 @@
 # SA_Lab3
 
-Laboratory work #3 for "Software Architecture" subject
+Software architecture, laboratory work #2
 
 ### CLI TIPS
 
